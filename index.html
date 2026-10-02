@@ -5,774 +5,211 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#F1ECE2">
   <title>VIENS — Batch availability</title>
-
   <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      background: #F1ECE2;
-      color: #2B2420;
-      font-family: Georgia, "Times New Roman", serif;
-    }
-
-    .wrap {
-      max-width: 480px;
-      margin: auto;
-      padding: 28px 18px 40px;
-    }
-
-    .topbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 4px;
-    }
-
-    h1 {
-      font-size: 26px;
-      margin: 0 0 2px;
-      letter-spacing: .04em;
-    }
-
-    .lang {
-      display: inline-flex;
-      border: 1px solid rgba(43, 36, 32, .16);
-      border-radius: 999px;
-      padding: 2px;
-      background: rgba(255, 255, 255, .45);
-      font: 11px system-ui;
-    }
-
-    .lang button {
-      border: 0;
-      background: transparent;
-      color: #6B6058;
-      padding: 5px 9px;
-      border-radius: 999px;
-      font: 600 11px system-ui;
-      cursor: pointer;
-    }
-
-    .lang button.active {
-      background: #2B2420;
-      color: #fff;
-    }
-
-    .sub {
-      font: 14px system-ui;
-      color: #6B6058;
-      margin-bottom: 22px;
-    }
-
-    .batch {
-      background: #fff;
-      border: 1px solid rgba(43, 36, 32, .12);
-      border-radius: 14px;
-      padding: 16px 16px 6px;
-      margin-bottom: 14px;
-    }
-
-    h2 {
-      font-size: 18px;
-      margin: 0 0 10px;
-    }
-
-    .flavor-row {
-      border-top: 1px solid rgba(43, 36, 32, .08);
-      padding: 12px 0;
-    }
-
-    .row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      font: 15px system-ui;
-    }
-
-    .flavor-info {
-      min-width: 0;
-      flex: 1;
-    }
-
-    .flavor-name {
-      display: block;
-      line-height: 1.35;
-    }
-
-    .price {
-      display: block;
-      margin-top: 4px;
-      color: #6B6058;
-      font: 12px system-ui;
-    }
-
-    .pill {
-      font-size: 13px;
-      font-weight: 600;
-      padding: 5px 12px;
-      border-radius: 999px;
-      white-space: nowrap;
-      flex-shrink: 0;
-    }
-
-    .order-now {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 7px;
-      background: #2B2420;
-      color: #fff;
-      text-decoration: none;
-      font: 700 13px system-ui;
-      padding: 12px 14px;
-      border-radius: 9px;
-      margin: 4px 0 2px;
-    }
-
-    .empty,
-    .error {
-      font: 14px/1.5 system-ui;
-      color: #6B6058;
-    }
-
-    .foot {
-      font: 12px system-ui;
-      color: #6B6058;
-      margin-top: 18px;
-    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #F1ECE2; color: #2B2420; font-family: Georgia, "Times New Roman", serif; }
+    .wrap { max-width: 480px; margin: auto; padding: 28px 18px 40px; }
+    h1 { font-size: 26px; margin: 0 0 2px; letter-spacing: .04em; }
+    .topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+    .lang { display: inline-flex; border: 1px solid rgba(43,36,32,.16); border-radius: 999px; padding: 2px; background: rgba(255,255,255,.45); font: 11px system-ui; }
+    .lang button { border: 0; background: transparent; color: #6B6058; padding: 5px 9px; border-radius: 999px; font: 600 11px system-ui; cursor: pointer; }
+    .lang button.active { background: #2B2420; color: #fff; }
+    .sub { font: 14px system-ui; color: #6B6058; margin-bottom: 22px; }
+    .batch { background: #fff; border: 1px solid rgba(43,36,32,.12); border-radius: 14px; padding: 16px 16px 6px; margin-bottom: 14px; }
+    h2 { font-size: 18px; margin: 0 0 10px; }
+    .row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; font: 15px system-ui; gap: 12px; }
+    .flavor-info { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+    .price { font: 12px system-ui; color: #7A716A; letter-spacing: .01em; }
+    .flavor-row { border-top: 1px solid rgba(43,36,32,.08); padding-bottom: 12px; }
+    .pill { font-size: 13px; font-weight: 600; padding: 5px 12px; border-radius: 999px; white-space: nowrap; }
+    .order-now { display: flex; align-items: center; justify-content: center; gap: 7px; background: #2B2420; color: #fff; text-decoration: none; font: 700 13px system-ui; padding: 12px 14px; border-radius: 9px; margin: 4px 0 2px; }
+    .empty, .error { font: 14px/1.5 system-ui; color: #6B6058; }
+    .foot { font: 12px system-ui; color: #6B6058; margin-top: 18px; }
   </style>
 </head>
-
 <body>
   <main class="wrap">
-
     <div class="topbar">
       <h1>VIENS</h1>
-
       <div class="lang" role="group" aria-label="Language">
-        <button id="laoBtn" type="button">LAO</button>
-        <button id="engBtn" type="button" class="active">ENG</button>
+        <button id="laoBtn" type="button" aria-label="Lao">🇱🇦</button>
+        <button id="engBtn" type="button" class="active" aria-label="English">🇬🇧</button>
       </div>
     </div>
-
-    <div id="sub" class="sub">
-      Batch availability
-    </div>
-
-    <div id="app" class="empty">
-      Loading availability…
-    </div>
-
+    <div id="sub" class="sub">Batch availability</div>
+    <div id="app" class="empty">Loading availability…</div>
     <div id="updated" class="foot"></div>
-
   </main>
 
   <script>
-    const API_URL =
-      'https://viens-availability.farsinchaluern.workers.dev/';
-
-    const ORDER_URL =
-      'https://wa.link/j1znok';
+    const API_URL = 'https://viens-availability.farsinchaluern.workers.dev/';
+    const ORDER_URL = 'https://wa.link/j1znok';
 
     let currentData = null;
-
-    let lang =
-      localStorage.getItem('viensLang') || 'eng';
-
-
-    /* =========================
-       TRANSLATIONS
-    ========================= */
+    let lang = localStorage.getItem('viensLang') || 'eng';
 
     const T = {
-
       eng: {
         sub: 'Batch availability',
-
         loading: 'Loading availability…',
-
         available: 'Available',
-
         fewLeft: 'Few left',
-
         soldOut: 'Sold out',
-
         order: 'Order Now',
-
-        notOpen:
-          "Today's batch isn't open for orders yet — please check back soon.",
-
-        noBatch: d =>
-          'No batch today (' +
-          d +
-          ') — please check back on our next batch day.',
-
-        error:
-          'Availability is temporarily unavailable. Please try again shortly.',
-
+        notOpen: "Today's batch isn't open for orders yet — please check back soon.",
+        noBatch: d => 'No batch today (' + d + ') — please check back on our next batch day.',
+        error: 'Availability is temporarily unavailable. Please try again shortly.',
         updated: 'Updated ',
-
-        time:
-          ' (Vientiane time GMT+7)'
+        time: ' (Vientiane time)'
       },
-
-
       lao: {
-        sub:
-          'ຮອບຂະໜົມນູກັດພ້ອມສົ່ງ',
-
-        loading:
-          'ກຳລັງໂຫຼດຈຳນວນຂະໜົມ…',
-
-        available:
-          'ພ້ອມສົ່ງ',
-
-        fewLeft:
-          'ຍັງໜ້ອຍ',
-
-        soldOut:
-          'ໝົດແລ້ວ',
-
-        order:
-          'ສັ່ງຊື້',
-
-        notOpen:
-          'ຮອບສັ່ງຊື້ມື້ນີ້ຍັງບໍ່ເປີດ — ກະລຸນາກັບມາເບິ່ງໃໝ່ໄວໆນີ້.',
-
-        noBatch: d =>
-          'ມື້ນີ້ບໍ່ມີຮອບສັ່ງຊື້ (' +
-          d +
-          ') — ກະລຸນາກັບມາເບິ່ງໃນຮອບຕໍ່ໄປ.',
-
-        error:
-          'ບໍ່ສາມາດໂຫຼດຈຳນວນສິນຄ້າໄດ້ຊົ່ວຄາວ. ກະລຸນາລອງໃໝ່ອີກຄັ້ງ.',
-
-        updated:
-          'ອັບເດດ ',
-
-        time:
-          ' (ເວລາວຽງຈັນ GMT+7)'
+        sub: 'ຈຳນວນສິນຄ້າປະຈຳຮອບ',
+        loading: 'ກຳລັງໂຫຼດຈຳນວນສິນຄ້າ…',
+        available: 'ຍັງມີສິນຄ້າ',
+        fewLeft: 'ເຫຼືອຈຳນວນໜ້ອຍ',
+        soldOut: 'ໝົດແລ້ວ',
+        order: 'ສັ່ງຊື້',
+        notOpen: 'ຮອບສັ່ງຊື້ມື້ນີ້ຍັງບໍ່ເປີດ — ກະລຸນາກັບມາເບິ່ງໃໝ່ໄວໆນີ້.',
+        noBatch: d => 'ມື້ນີ້ບໍ່ມີຮອບສັ່ງຊື້ (' + d + ') — ກະລຸນາກັບມາເບິ່ງໃນຮອບຕໍ່ໄປ.',
+        error: 'ບໍ່ສາມາດໂຫຼດຈຳນວນສິນຄ້າໄດ້ຊົ່ວຄາວ. ກະລຸນາລອງໃໝ່ອີກຄັ້ງ.',
+        updated: 'ອັບເດດ ',
+        time: ' (ເວລາວຽງຈັນ)'
       }
-
     };
 
-
-    /* =========================
-       FLAVOR NAMES
-    ========================= */
-
-    const FLAVOR_ENG = {
-
-      'Lao Scallion':
-        'Lao Scallion Nougat Cracker',
-
-      'Black Truffle':
-        'Black Truffle Nougat Cracker',
-
-      'Pistachio Praliné':
-        'Pistachio Praliné Nougat Cracker'
-
+    const PRICES = {
+      'Lao Scallion': '135K / ฿200',
+      'Black Truffle': '140K / ฿210',
+      'Pistachio Praliné': '165K / ฿250'
     };
-
 
     const FLAVOR_LAO = {
-
-      'Lao Scallion':
-        'ນູກັດແຄັກເກີ້ຫອມລາວ',
-
-      'Black Truffle':
-        'ນູກັດແຄັກເກີ້ເຫັດທຣັບເຟີ',
-
-      'Pistachio Praliné':
-        'ນູກັດແຄັກເກີ້ພິສຕາຊິໂອ'
-
+      'Lao Scallion': 'ເຄຣັກເກີຮອງຫອມລາວ',
+      'Black Truffle': 'ເຄຣັກເກີ້ເຫັດທຣັບເຟີດຳ',
+      'Pistachio Praliné': 'ເຄຣັກເກີ້ພິສຕາຊິໂອ ພຣາລີນີ'
     };
 
-
-    /* =========================
-       PRICES
-    ========================= */
-
-    const FLAVOR_PRICES = {
-
-      'Lao Scallion':
-        '135K / ฿200',
-
-      'Black Truffle':
-        '140K / ฿210',
-
-      'Pistachio Praliné':
-        '165K / ฿250'
-
-    };
-
+    const WEEKDAYS_LAO = ['ວັນອາທິດ','ວັນຈັນ','ວັນອັງຄານ','ວັນພຸດ','ວັນພະຫັດ','ວັນສຸກ','ວັນເສົາ'];
+    const MONTHS_LAO = ['ມັງກອນ','ກຸມພາ','ມີນາ','ເມສາ','ພຶດສະພາ','ມິຖຸນາ','ກໍລະກົດ','ສິງຫາ','ກັນຍາ','ຕຸລາ','ພະຈິກ','ທັນວາ'];
 
     function flavorName(name) {
-
-      if (lang === 'lao') {
-        return FLAVOR_LAO[name] || name;
-      }
-
-      return FLAVOR_ENG[name] || name;
+      return lang === 'lao' ? (FLAVOR_LAO[name] || name) : name;
     }
-
-
-    function flavorPrice(name) {
-
-      return FLAVOR_PRICES[name] || '';
-
-    }
-
-
-    /* =========================
-       LAO DATE
-    ========================= */
-
-    const WEEKDAYS_LAO = [
-      'ວັນອາທິດ',
-      'ວັນຈັນ',
-      'ວັນອັງຄານ',
-      'ວັນພຸດ',
-      'ວັນພະຫັດ',
-      'ວັນສຸກ',
-      'ວັນເສົາ'
-    ];
-
-
-    const MONTHS_LAO = [
-      'ມັງກອນ',
-      'ກຸມພາ',
-      'ມີນາ',
-      'ເມສາ',
-      'ພຶດສະພາ',
-      'ມິຖຸນາ',
-      'ກໍລະກົດ',
-      'ສິງຫາ',
-      'ກັນຍາ',
-      'ຕຸລາ',
-      'ພະຈິກ',
-      'ທັນວາ'
-    ];
-
 
     function batchLabel(batch) {
-
-      if (lang !== 'lao') {
-        return batch.label || '';
-      }
-
-
+      if (lang !== 'lao') return batch.label || '';
       if (batch.date) {
-
-        const d =
-          new Date(batch.date + 'T00:00:00');
-
+        const d = new Date(batch.date + 'T00:00:00');
         if (!Number.isNaN(d.getTime())) {
-
-          return (
-            WEEKDAYS_LAO[d.getDay()] +
-            ' ' +
-            d.getDate() +
-            ' ' +
-            MONTHS_LAO[d.getMonth()] +
-            ' ' +
-            d.getFullYear()
-          );
-
+          return WEEKDAYS_LAO[d.getDay()] + ' ' + d.getDate() + ' ' + MONTHS_LAO[d.getMonth()] + ' ' + d.getFullYear();
         }
-
       }
-
-
       if (batch.label) {
-
-        const m =
-          String(batch.label).match(
-            /^[A-Za-z]+\s+(\d{1,2})\s+([A-Za-z]+)\s+(\d{4})$/
-          );
-
-
-        const months = {
-
-          Jan: 0,
-          Feb: 1,
-          Mar: 2,
-          Apr: 3,
-          May: 4,
-          Jun: 5,
-          Jul: 6,
-          Aug: 7,
-          Sep: 8,
-          Oct: 9,
-          Nov: 10,
-          Dec: 11
-
-        };
-
-
-        if (
-          m &&
-          months[m[2]] !== undefined
-        ) {
-
-          const d =
-            new Date(
-              Number(m[3]),
-              months[m[2]],
-              Number(m[1])
-            );
-
-
-          return (
-            WEEKDAYS_LAO[d.getDay()] +
-            ' ' +
-            d.getDate() +
-            ' ' +
-            MONTHS_LAO[d.getMonth()] +
-            ' ' +
-            d.getFullYear()
-          );
-
+        const m = String(batch.label).match(/^[A-Za-z]+\s+(\d{1,2})\s+([A-Za-z]+)\s+(\d{4})$/);
+        const months = { Jan:0, Feb:1, Mar:2, Apr:3, May:4, Jun:5, Jul:6, Aug:7, Sep:8, Oct:9, Nov:10, Dec:11 };
+        if (m && months[m[2]] !== undefined) {
+          const d = new Date(Number(m[3]), months[m[2]], Number(m[1]));
+          return WEEKDAYS_LAO[d.getDay()] + ' ' + d.getDate() + ' ' + MONTHS_LAO[d.getMonth()] + ' ' + d.getFullYear();
         }
-
       }
-
-
       return batch.label || '';
-
     }
-
-
-    /* =========================
-       HTML ESCAPE
-    ========================= */
 
     function esc(v) {
-
-      return String(v ?? '').replace(
-        /[&<>"']/g,
-        c => ({
-
-          '&': '&amp;',
-          '<': '&lt;',
-          '>': '&gt;',
-          '"': '&quot;',
-          "'": '&#39;'
-
-        }[c])
-
-      );
-
+      return String(v ?? '').replace(/[&<>"']/g, c => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;'
+      }[c]));
     }
-
-
-    /* =========================
-       LANGUAGE SWITCH
-    ========================= */
 
     function setLanguage(nextLang) {
-
       lang = nextLang;
-
-      localStorage.setItem(
-        'viensLang',
-        lang
-      );
-
-
-      document.documentElement.lang =
-        lang === 'lao'
-          ? 'lo'
-          : 'en';
-
-
-      document.getElementById(
-        'sub'
-      ).textContent =
-        T[lang].sub;
-
-
-      document.getElementById(
-        'laoBtn'
-      ).classList.toggle(
-        'active',
-        lang === 'lao'
-      );
-
-
-      document.getElementById(
-        'engBtn'
-      ).classList.toggle(
-        'active',
-        lang === 'eng'
-      );
-
+      localStorage.setItem('viensLang', lang);
+      document.documentElement.lang = lang === 'lao' ? 'lo' : 'en';
+      document.getElementById('sub').textContent = T[lang].sub;
+      document.getElementById('laoBtn').classList.toggle('active', lang === 'lao');
+      document.getElementById('engBtn').classList.toggle('active', lang === 'eng');
 
       if (currentData) {
-
         render(currentData);
-
       } else {
-
-        document.getElementById(
-          'app'
-        ).textContent =
-          T[lang].loading;
-
+        document.getElementById('app').textContent = T[lang].loading;
       }
-
     }
-
-
-    /* =========================
-       RENDER
-    ========================= */
 
     function render(d) {
-
       currentData = d;
-
-
-      const app =
-        document.getElementById('app');
-
-
-      const updated =
-        document.getElementById('updated');
-
-
+      const app = document.getElementById('app');
+      const updated = document.getElementById('updated');
       const t = T[lang];
 
-
       if (d.error) {
-
-        app.innerHTML =
-          '<div class="error">' +
-          t.error +
-          '</div>';
-
+        app.innerHTML = '<div class="error">' + t.error + '</div>';
         return;
-
       }
-
 
       const C = {
-
-        AVAILABLE: [
-          '#E7F0E3',
-          '#3F7A52',
-          t.available
-        ],
-
-        'FEW LEFT': [
-          '#F6ECD9',
-          '#9A6A22',
-          t.fewLeft
-        ],
-
-        'SOLD OUT': [
-          '#ECEAE6',
-          '#7A716A',
-          t.soldOut
-        ]
-
+        AVAILABLE: ['#E7F0E3', '#3F7A52', t.available],
+        'FEW LEFT': ['#F6ECD9', '#9A6A22', t.fewLeft],
+        'SOLD OUT': ['#ECEAE6', '#7A716A', t.soldOut]
       };
 
-
       let h = '';
-
       let ok = false;
 
-
       if (d.batches?.length) {
-
         d.batches.forEach(b => {
-
-          h +=
-            '<section class="batch">' +
-              '<h2>' +
-                esc(batchLabel(b)) +
-              '</h2>';
-
+          h += '<section class="batch"><h2>' + esc(batchLabel(b)) + '</h2>';
 
           (b.flavors || []).forEach(f => {
+            const c = C[f.status] || C['SOLD OUT'];
 
-            const c =
-              C[f.status] ||
-              C['SOLD OUT'];
+            if (f.status !== 'SOLD OUT') ok = true;
 
-
-            if (f.status !== 'SOLD OUT') {
-              ok = true;
-            }
-
-
-            h +=
-              '<div class="flavor-row">' +
-
-                '<div class="row">' +
-
-                  '<div class="flavor-info">' +
-
-                    '<span class="flavor-name">' +
-                      esc(flavorName(f.name)) +
-                    '</span>' +
-
-                    '<span class="price">' +
-                      esc(flavorPrice(f.name)) +
-                    '</span>' +
-
-                  '</div>' +
-
-                  '<span class="pill" style="background:' +
-                    c[0] +
-                    ';color:' +
-                    c[1] +
-                  '">' +
-
-                    c[2] +
-
-                  '</span>' +
-
-                '</div>' +
-
-              '</div>';
-
+            h += '<div class="flavor-row"><div class="row"><div class="flavor-info"><span>' +
+              esc(flavorName(f.name)) +
+              '</span><span class="price">' +
+              esc(PRICES[f.name] || '') +
+              '</span></div><span class="pill" style="background:' + c[0] + ';color:' + c[1] + '">' +
+              c[2] +
+              '</span></div></div>';
           });
 
-
-          h +=
-            '</section>';
-
+          h += '</section>';
         });
-
       } else {
-
-        h =
-          '<p class="empty">' +
-
-          (
-            d.todayBatchNotOpen
-
-              ? t.notOpen
-
-              : t.noBatch(
-                  esc(
-                    lang === 'lao'
-                      ? batchLabel({
-                          date: d.todayDate,
-                          label: d.todayLabel
-                        })
-                      : d.todayLabel
-                  )
-                )
-
-          ) +
-
-          '</p>';
-
+        h = '<p class="empty">' + (
+          d.todayBatchNotOpen
+            ? t.notOpen
+            : t.noBatch(esc(lang === 'lao' ? batchLabel({ date: d.todayDate, label: d.todayLabel }) : d.todayLabel))
+        ) + '</p>';
       }
-
 
       if (ok) {
-
-        h +=
-          '<a class="order-now" ' +
-          'href="' +
-          ORDER_URL +
-          '" ' +
-          'target="_blank" ' +
-          'rel="noopener">' +
-
-          t.order +
-
-          ' <span>→</span>' +
-
-          '</a>';
-
+        h += '<a class="order-now" href="' + ORDER_URL + '" target="_blank" rel="noopener">' + t.order + ' <span>→</span></a>';
       }
-
 
       app.innerHTML = h;
-
-
-      updated.textContent =
-        t.updated +
-        (d.updated || '') +
-        t.time;
-
+      updated.textContent = t.updated + (d.updated || '') + t.time;
     }
 
-
-    /* =========================
-       BUTTONS
-    ========================= */
-
-    document
-      .getElementById('laoBtn')
-      .addEventListener(
-        'click',
-        () => setLanguage('lao')
-      );
-
-
-    document
-      .getElementById('engBtn')
-      .addEventListener(
-        'click',
-        () => setLanguage('eng')
-      );
-
-
-    /* =========================
-       INITIAL LANGUAGE
-    ========================= */
-
+    document.getElementById('laoBtn').addEventListener('click', () => setLanguage('lao'));
+    document.getElementById('engBtn').addEventListener('click', () => setLanguage('eng'));
     setLanguage(lang);
 
-
-    /* =========================
-       LOAD AVAILABILITY
-    ========================= */
-
-    fetch(
-      API_URL,
-      {
-        method: 'GET',
-        cache: 'no-store'
-      }
-    )
-
+    fetch(API_URL, { method: 'GET', cache: 'no-store' })
       .then(r => {
-
-        if (!r.ok) {
-          throw new Error(
-            'API ' + r.status
-          );
-        }
-
+        if (!r.ok) throw new Error('API ' + r.status);
         return r.json();
-
       })
-
       .then(render)
-
       .catch(() => {
-
-        document.getElementById(
-          'app'
-        ).innerHTML =
-          '<div class="error">' +
-          T[lang].error +
-          '</div>';
-
+        document.getElementById('app').innerHTML =
+          '<div class="error">' + T[lang].error + '</div>';
       });
-
   </script>
-
 </body>
 </html>
