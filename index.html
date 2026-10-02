@@ -10,6 +10,10 @@
     body { margin: 0; background: #F1ECE2; color: #2B2420; font-family: Georgia, "Times New Roman", serif; }
     .wrap { max-width: 480px; margin: auto; padding: 28px 18px 40px; }
     h1 { font-size: 26px; margin: 0 0 2px; letter-spacing: .04em; }
+    .topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+    .lang { display: inline-flex; border: 1px solid rgba(43,36,32,.16); border-radius: 999px; padding: 2px; background: rgba(255,255,255,.45); font: 11px system-ui; }
+    .lang button { border: 0; background: transparent; color: #6B6058; padding: 5px 9px; border-radius: 999px; font: 600 11px system-ui; cursor: pointer; }
+    .lang button.active { background: #2B2420; color: #fff; }
     .sub { font: 14px system-ui; color: #6B6058; margin-bottom: 22px; }
     .batch { background: #fff; border: 1px solid rgba(43,36,32,.12); border-radius: 14px; padding: 16px 16px 6px; margin-bottom: 14px; }
     h2 { font-size: 18px; margin: 0 0 10px; }
@@ -23,8 +27,14 @@
 </head>
 <body>
   <main class="wrap">
-    <h1>VIENS</h1>
-    <div class="sub">Batch availability</div>
+    <div class="topbar">
+      <h1>VIENS</h1>
+      <div class="lang" role="group" aria-label="Language">
+        <button id="laoBtn" type="button">LAO</button>
+        <button id="engBtn" type="button" class="active">ENG</button>
+      </div>
+    </div>
+    <div id="sub" class="sub">Batch availability</div>
     <div id="app" class="empty">Loading availability…</div>
     <div id="updated" class="foot"></div>
   </main>
@@ -32,6 +42,38 @@
   <script>
     const API_URL = 'https://viens-availability.farsinchaluern.workers.dev/';
     const ORDER_URL = 'https://wa.link/j1znok';
+
+    let currentData = null;
+    let lang = localStorage.getItem('viensLang') || 'eng';
+
+    const T = {
+      eng: {
+        sub: 'Batch availability',
+        loading: 'Loading availability…',
+        available: 'Available',
+        fewLeft: 'Few left',
+        soldOut: 'Sold out',
+        order: 'Order Now',
+        notOpen: "Today's batch isn't open for orders yet — please check back soon.",
+        noBatch: d => 'No batch today (' + d + ') — please check back on our next batch day.',
+        error: 'Availability is temporarily unavailable. Please try again shortly.',
+        updated: 'Updated ',
+        time: ' (Vientiane time)'
+      },
+      lao: {
+        sub: 'ຈຳນວນສິນຄ້າປະຈຳຮອບ',
+        loading: 'ກຳລັງໂຫຼດຈຳນວນສິນຄ້າ…',
+        available: 'ຍັງມີສິນຄ້າ',
+        fewLeft: 'ເຫຼືອຈຳນວນໜ້ອຍ',
+        soldOut: 'ໝົດແລ້ວ',
+        order: 'ສັ່ງຊື້',
+        notOpen: 'ຮອບສັ່ງຊື້ມື້ນີ້ຍັງບໍ່ເປີດ — ກະລຸນາກັບມາເບິ່ງໃໝ່ໄວໆນີ້.',
+        noBatch: d => 'ມື້ນີ້ບໍ່ມີຮອບສັ່ງຊື້ (' + d + ') — ກະລຸນາກັບມາເບິ່ງໃນຮອບຕໍ່ໄປ.',
+        error: 'ບໍ່ສາມາດໂຫຼດຈຳນວນສິນຄ້າໄດ້ຊົ່ວຄາວ. ກະລຸນາລອງໃໝ່ອີກຄັ້ງ.',
+        updated: 'ອັບເດດ ',
+        time: ' (ເວລາວຽງຈັນ)'
+      }
+    };
 
     function esc(v) {
       return String(v ?? '').replace(/[&<>"']/g, c => ({
@@ -43,19 +85,36 @@
       }[c]));
     }
 
+    function setLanguage(nextLang) {
+      lang = nextLang;
+      localStorage.setItem('viensLang', lang);
+      document.documentElement.lang = lang === 'lao' ? 'lo' : 'en';
+      document.getElementById('sub').textContent = T[lang].sub;
+      document.getElementById('laoBtn').classList.toggle('active', lang === 'lao');
+      document.getElementById('engBtn').classList.toggle('active', lang === 'eng');
+
+      if (currentData) {
+        render(currentData);
+      } else {
+        document.getElementById('app').textContent = T[lang].loading;
+      }
+    }
+
     function render(d) {
+      currentData = d;
       const app = document.getElementById('app');
       const updated = document.getElementById('updated');
+      const t = T[lang];
 
       if (d.error) {
-        app.innerHTML = '<div class="error">Availability is temporarily unavailable. Please try again shortly.</div>';
+        app.innerHTML = '<div class="error">' + t.error + '</div>';
         return;
       }
 
       const C = {
-        AVAILABLE: ['#E7F0E3', '#3F7A52', 'Available'],
-        'FEW LEFT': ['#F6ECD9', '#9A6A22', 'Few left'],
-        'SOLD OUT': ['#ECEAE6', '#7A716A', 'Sold out']
+        AVAILABLE: ['#E7F0E3', '#3F7A52', t.available],
+        'FEW LEFT': ['#F6ECD9', '#9A6A22', t.fewLeft],
+        'SOLD OUT': ['#ECEAE6', '#7A716A', t.soldOut]
       };
 
       let h = '';
@@ -82,18 +141,22 @@
       } else {
         h = '<p class="empty">' + (
           d.todayBatchNotOpen
-            ? "Today's batch isn't open for orders yet — please check back soon."
-            : 'No batch today (' + esc(d.todayLabel) + ') — please check back on our next batch day.'
+            ? t.notOpen
+            : t.noBatch(esc(d.todayLabel))
         ) + '</p>';
       }
 
       if (ok) {
-        h += '<a class="order-now" href="' + ORDER_URL + '" target="_blank" rel="noopener">Order Now <span>→</span></a>';
+        h += '<a class="order-now" href="' + ORDER_URL + '" target="_blank" rel="noopener">' + t.order + ' <span>→</span></a>';
       }
 
       app.innerHTML = h;
-      updated.textContent = 'Updated ' + (d.updated || '') + ' (Vientiane time)';
+      updated.textContent = t.updated + (d.updated || '') + t.time;
     }
+
+    document.getElementById('laoBtn').addEventListener('click', () => setLanguage('lao'));
+    document.getElementById('engBtn').addEventListener('click', () => setLanguage('eng'));
+    setLanguage(lang);
 
     fetch(API_URL, { method: 'GET', cache: 'no-store' })
       .then(r => {
@@ -103,7 +166,7 @@
       .then(render)
       .catch(() => {
         document.getElementById('app').innerHTML =
-          '<div class="error">Availability is temporarily unavailable. Please try again shortly.</div>';
+          '<div class="error">' + T[lang].error + '</div>';
       });
   </script>
 </body>
