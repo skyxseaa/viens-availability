@@ -32,8 +32,8 @@
     <div class="topbar">
       <h1>VIENS</h1>
       <div class="lang" role="group" aria-label="Language">
-        <button id="laoBtn" type="button">LAO</button>
-        <button id="engBtn" type="button" class="active">ENG</button>
+        <button id="laoBtn" type="button" aria-label="Lao">🇱🇦</button>
+        <button id="engBtn" type="button" class="active" aria-label="English">🇬🇧</button>
       </div>
     </div>
     <div id="sub" class="sub">Batch availability</div>
@@ -60,50 +60,40 @@
         noBatch: d => 'No batch today (' + d + ') — please check back on our next batch day.',
         error: 'Availability is temporarily unavailable. Please try again shortly.',
         updated: 'Updated ',
-        time: ' (Vientiane time GMT+7)'
+        time: ' (Vientiane time)'
       },
       lao: {
-        sub: 'ຮອບຂະໜົມນູກັດພ້ອມສົ່ງ',
-        loading: 'ກຳລັງໂຫຼດຈຳນວນຂະໜົມ…',
-        available: 'ພ້ອມສົ່ງ',
-        fewLeft: 'ຍັງໜ້ອຍ',
+        sub: 'ຈຳນວນສິນຄ້າປະຈຳຮອບ',
+        loading: 'ກຳລັງໂຫຼດຈຳນວນສິນຄ້າ…',
+        available: 'ຍັງມີສິນຄ້າ',
+        fewLeft: 'ເຫຼືອຈຳນວນໜ້ອຍ',
         soldOut: 'ໝົດແລ້ວ',
         order: 'ສັ່ງຊື້',
         notOpen: 'ຮອບສັ່ງຊື້ມື້ນີ້ຍັງບໍ່ເປີດ — ກະລຸນາກັບມາເບິ່ງໃໝ່ໄວໆນີ້.',
         noBatch: d => 'ມື້ນີ້ບໍ່ມີຮອບສັ່ງຊື້ (' + d + ') — ກະລຸນາກັບມາເບິ່ງໃນຮອບຕໍ່ໄປ.',
         error: 'ບໍ່ສາມາດໂຫຼດຈຳນວນສິນຄ້າໄດ້ຊົ່ວຄາວ. ກະລຸນາລອງໃໝ່ອີກຄັ້ງ.',
         updated: 'ອັບເດດ ',
-        time: ' (ເວລາວຽງຈັນ GMT+7)'
+        time: ' (ເວລາວຽງຈັນ)'
       }
     };
 
     const PRICES = {
-      'Lao Scallion': '135,000LAK / ฿200',
-      'Black Truffle': '140,000LAK / ฿210',
-      'Pistachio Praliné': '165,000LAK / ฿250'
+      'Lao Scallion': '135K / ฿200',
+      'Black Truffle': '140K / ฿210',
+      'Pistachio Praliné': '165K / ฿250'
     };
 
     const FLAVOR_LAO = {
-      'Lao Scallion': 'ນູກັດແຄັກເກີ້ຕົ້ນຫອມ ໂຮມເມດ',
-      'Black Truffler': 'ນູກັດແຄັກເກີ້ເຫັດທຣັບເຟີລ ໂຮມເມດ',
-      'Pistachio Praliné': 'ນູກັດແຄັກເກີ້ພິສຕາຊິໂອ້ ໂຮມເມດ'
+      'Lao Scallion': 'ເຄຣັກເກີຮອງຫອມລາວ',
+      'Black Truffle': 'ເຄຣັກເກີ້ເຫັດທຣັບເຟີດຳ',
+      'Pistachio Praliné': 'ເຄຣັກເກີ້ພິສຕາຊິໂອ ພຣາລີນີ'
     };
-  const FLAVOR_ENG = {
-  'Lao Scallion': 'Lao Scallion Nougat Cracker',
-  'Black Truffle': 'Black Truffle Nougat Cracker',
-  'Pistachio Praliné': 'Pistachio Praliné Nougat Cracker'
-};
-    
+
     const WEEKDAYS_LAO = ['ວັນອາທິດ','ວັນຈັນ','ວັນອັງຄານ','ວັນພຸດ','ວັນພະຫັດ','ວັນສຸກ','ວັນເສົາ'];
     const MONTHS_LAO = ['ມັງກອນ','ກຸມພາ','ມີນາ','ເມສາ','ພຶດສະພາ','ມິຖຸນາ','ກໍລະກົດ','ສິງຫາ','ກັນຍາ','ຕຸລາ','ພະຈິກ','ທັນວາ'];
 
-function flavorName(name) {
-  if (lang === 'lao') {
-    return FLAVOR_LAO[name] || name;
-  }
-
-  return FLAVOR_ENG[name] || name;
-}
+    function flavorName(name) {
+      return lang === 'lao' ? (FLAVOR_LAO[name] || name) : name;
     }
 
     function batchLabel(batch) {
