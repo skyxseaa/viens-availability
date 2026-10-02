@@ -61,19 +61,51 @@
         time: ' (Vientiane time)'
       },
       lao: {
-        sub: 'ຈຳນວນຂະໜົມປະຈຳຮອບ',
-        loading: 'ກຳລັງໂຫຼດຈຳນວນສິນຄ້າ…',
-        available: 'ຍັງມີພ້ອມສົ່ງ',
-        fewLeft: 'ໄກ້ໝົດແລ້ວ',
+        sub: 'ຮອບຂະໜົມພ້ອມສົ່ງ',
+        loading: 'ກຳລັງໂຫຼດຈຳນວນຂະໜົມ…',
+        available: 'ມີສິນຄ້າ',
+        fewLeft: 'ຍັງໜ້ອຍ',
         soldOut: 'ໝົດແລ້ວ',
         order: 'ສັ່ງຊື້',
         notOpen: 'ຮອບສັ່ງຊື້ມື້ນີ້ຍັງບໍ່ເປີດ — ກະລຸນາກັບມາເບິ່ງໃໝ່ໄວໆນີ້.',
-        noBatch: d => 'ມື້ນີ້ບໍ່ມີຮອບຂະຫນົມ (' + d + ') — ກະລຸນາກັບມາເບິ່ງໃນຮອບຕໍ່ໄປ.',
+        noBatch: d => 'ມື້ນີ້ບໍ່ມີຮອບສັ່ງຊື້ (' + d + ') — ກະລຸນາກັບມາເບິ່ງໃນຮອບຕໍ່ໄປ.',
         error: 'ບໍ່ສາມາດໂຫຼດຈຳນວນສິນຄ້າໄດ້ຊົ່ວຄາວ. ກະລຸນາລອງໃໝ່ອີກຄັ້ງ.',
         updated: 'ອັບເດດ ',
         time: ' (ເວລາວຽງຈັນ)'
       }
     };
+
+    const FLAVOR_LAO = {
+      'Lao Scallion': 'ແຄກເກີ້ຫອມບົ່ວລາວ',
+      'Black Truffle': 'ແຄກເກີ້ເຫັດທຣັບເຟີ',
+      'Pistachio Praliné': 'ແຄກເກີ້ພິສຕາຊິໂອ'
+    };
+
+    const WEEKDAYS_LAO = ['ວັນອາທິດ','ວັນຈັນ','ວັນອັງຄານ','ວັນພຸດ','ວັນພະຫັດ','ວັນສຸກ','ວັນເສົາ'];
+    const MONTHS_LAO = ['ມັງກອນ','ກຸມພາ','ມີນາ','ເມສາ','ພຶດສະພາ','ມິຖຸນາ','ກໍລະກົດ','ສິງຫາ','ກັນຍາ','ຕຸລາ','ພະຈິກ','ທັນວາ'];
+
+    function flavorName(name) {
+      return lang === 'lao' ? (FLAVOR_LAO[name] || name) : name;
+    }
+
+    function batchLabel(batch) {
+      if (lang !== 'lao') return batch.label || '';
+      if (batch.date) {
+        const d = new Date(batch.date + 'T00:00:00');
+        if (!Number.isNaN(d.getTime())) {
+          return WEEKDAYS_LAO[d.getDay()] + ' ' + d.getDate() + ' ' + MONTHS_LAO[d.getMonth()] + ' ' + d.getFullYear();
+        }
+      }
+      if (batch.label) {
+        const m = String(batch.label).match(/^[A-Za-z]+\s+(\d{1,2})\s+([A-Za-z]+)\s+(\d{4})$/);
+        const months = { Jan:0, Feb:1, Mar:2, Apr:3, May:4, Jun:5, Jul:6, Aug:7, Sep:8, Oct:9, Nov:10, Dec:11 };
+        if (m && months[m[2]] !== undefined) {
+          const d = new Date(Number(m[3]), months[m[2]], Number(m[1]));
+          return WEEKDAYS_LAO[d.getDay()] + ' ' + d.getDate() + ' ' + MONTHS_LAO[d.getMonth()] + ' ' + d.getFullYear();
+        }
+      }
+      return batch.label || '';
+    }
 
     function esc(v) {
       return String(v ?? '').replace(/[&<>"']/g, c => ({
@@ -122,7 +154,7 @@
 
       if (d.batches?.length) {
         d.batches.forEach(b => {
-          h += '<section class="batch"><h2>' + esc(b.label) + '</h2>';
+          h += '<section class="batch"><h2>' + esc(batchLabel(b)) + '</h2>';
 
           (b.flavors || []).forEach(f => {
             const c = C[f.status] || C['SOLD OUT'];
@@ -130,7 +162,7 @@
             if (f.status !== 'SOLD OUT') ok = true;
 
             h += '<div class="flavor-row"><div class="row"><span>' +
-              esc(f.name) +
+              esc(flavorName(f.name)) +
               '</span><span class="pill" style="background:' + c[0] + ';color:' + c[1] + '">' +
               c[2] +
               '</span></div></div>';
@@ -142,7 +174,7 @@
         h = '<p class="empty">' + (
           d.todayBatchNotOpen
             ? t.notOpen
-            : t.noBatch(esc(d.todayLabel))
+            : t.noBatch(esc(lang === 'lao' ? batchLabel({ date: d.todayDate, label: d.todayLabel }) : d.todayLabel))
         ) + '</p>';
       }
 
