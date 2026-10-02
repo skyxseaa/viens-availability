@@ -17,7 +17,9 @@
     .sub { font: 14px system-ui; color: #6B6058; margin-bottom: 22px; }
     .batch { background: #fff; border: 1px solid rgba(43,36,32,.12); border-radius: 14px; padding: 16px 16px 6px; margin-bottom: 14px; }
     h2 { font-size: 18px; margin: 0 0 10px; }
-    .row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; font: 15px system-ui; }
+    .row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; font: 15px system-ui; gap: 12px; }
+    .flavor-info { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+    .price { font: 12px system-ui; color: #7A716A; letter-spacing: .01em; }
     .flavor-row { border-top: 1px solid rgba(43,36,32,.08); padding-bottom: 12px; }
     .pill { font-size: 13px; font-weight: 600; padding: 5px 12px; border-radius: 999px; white-space: nowrap; }
     .order-now { display: flex; align-items: center; justify-content: center; gap: 7px; background: #2B2420; color: #fff; text-decoration: none; font: 700 13px system-ui; padding: 12px 14px; border-radius: 9px; margin: 4px 0 2px; }
@@ -61,10 +63,10 @@
         time: ' (Vientiane time)'
       },
       lao: {
-        sub: 'ຮອບຂະໜົມພ້ອມສົ່ງ',
-        loading: 'ກຳລັງໂຫຼດຈຳນວນຂະໜົມ…',
-        available: 'ມີສິນຄ້າ',
-        fewLeft: 'ຍັງໜ້ອຍ',
+        sub: 'ຈຳນວນສິນຄ້າປະຈຳຮອບ',
+        loading: 'ກຳລັງໂຫຼດຈຳນວນສິນຄ້າ…',
+        available: 'ຍັງມີສິນຄ້າ',
+        fewLeft: 'ເຫຼືອຈຳນວນໜ້ອຍ',
         soldOut: 'ໝົດແລ້ວ',
         order: 'ສັ່ງຊື້',
         notOpen: 'ຮອບສັ່ງຊື້ມື້ນີ້ຍັງບໍ່ເປີດ — ກະລຸນາກັບມາເບິ່ງໃໝ່ໄວໆນີ້.',
@@ -75,10 +77,16 @@
       }
     };
 
+    const PRICES = {
+      'Lao Scallion': '135K / ฿200',
+      'Black Truffle': '140K / ฿210',
+      'Pistachio Praliné': '165K / ฿250'
+    };
+
     const FLAVOR_LAO = {
-      'Lao Scallion': 'ແຄກເກີ້ຫອມບົ່ວລາວ',
-      'Black Truffle': 'ແຄກເກີ້ເຫັດທຣັບເຟີ',
-      'Pistachio Praliné': 'ແຄກເກີ້ພິສຕາຊິໂອ'
+      'Lao Scallion': 'ເຄຣັກເກີຮອງຫອມລາວ',
+      'Black Truffle': 'ເຄຣັກເກີ້ເຫັດທຣັບເຟີດຳ',
+      'Pistachio Praliné': 'ເຄຣັກເກີ້ພິສຕາຊິໂອ ພຣາລີນີ'
     };
 
     const WEEKDAYS_LAO = ['ວັນອາທິດ','ວັນຈັນ','ວັນອັງຄານ','ວັນພຸດ','ວັນພະຫັດ','ວັນສຸກ','ວັນເສົາ'];
@@ -161,9 +169,11 @@
 
             if (f.status !== 'SOLD OUT') ok = true;
 
-            h += '<div class="flavor-row"><div class="row"><span>' +
+            h += '<div class="flavor-row"><div class="row"><div class="flavor-info"><span>' +
               esc(flavorName(f.name)) +
-              '</span><span class="pill" style="background:' + c[0] + ';color:' + c[1] + '">' +
+              '</span><span class="price">' +
+              esc(PRICES[f.name] || '') +
+              '</span></div><span class="pill" style="background:' + c[0] + ';color:' + c[1] + '">' +
               c[2] +
               '</span></div></div>';
           });
