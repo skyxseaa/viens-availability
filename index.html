@@ -19,6 +19,7 @@
     h2 { font-size: 18px; margin: 0 0 10px; }
     .row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; font: 15px system-ui; gap: 12px; }
     .flavor-info { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+    .flavor-info > span:first-child { font-weight: 700; }
     .price { font: 12px system-ui; color: #7A716A; letter-spacing: .01em; }
     .flavor-row { border-top: 1px solid rgba(43,36,32,.08); padding-bottom: 12px; }
     .pill { font-size: 13px; font-weight: 600; padding: 5px 12px; border-radius: 999px; white-space: nowrap; }
@@ -83,6 +84,12 @@
       'Pistachio Praliné': '165,000K / ฿250'
     };
 
+    const FLAVOR_ENG = {
+      'Lao Scallion': 'Lao Scallion Nougat Cracker',
+      'Black Truffle': 'Black Truffle Nougat Cracker',
+      'Pistachio Praliné': 'Pistachio Praliné Nougat Cracker'
+    };
+
     const FLAVOR_LAO = {
       'Lao Scallion': 'ນູກັດແຄັກເກີ້ຕົ້ນຫອມ',
       'Black Truffle': 'ນູກັດແຄັກເກີ້ເຫັດທຣັບເຟີລ',
@@ -93,7 +100,9 @@
     const MONTHS_LAO = ['ມັງກອນ','ກຸມພາ','ມີນາ','ເມສາ','ພຶດສະພາ','ມິຖຸນາ','ກໍລະກົດ','ສິງຫາ','ກັນຍາ','ຕຸລາ','ພະຈິກ','ທັນວາ'];
 
     function flavorName(name) {
-      return lang === 'lao' ? (FLAVOR_LAO[name] || name) : name;
+      return lang === 'lao'
+        ? (FLAVOR_LAO[name] || name)
+        : (FLAVOR_ENG[name] || name);
     }
 
     function batchLabel(batch) {
